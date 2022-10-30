@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GrapplingScript : MonoBehaviour
 {
+    [SerializeField] PlayerWeapons currentWeapon;
+
     private LineRenderer lr;
     private Vector3 grapplePoint;
     public LayerMask whatIsGrappable;
@@ -11,6 +13,10 @@ public class GrapplingScript : MonoBehaviour
     private float maxDistance = 100f;
     private SpringJoint joint;
 
+    private void Start()
+    {
+        
+    }
     private void Awake()
     {
         lr = GetComponent<LineRenderer>();
