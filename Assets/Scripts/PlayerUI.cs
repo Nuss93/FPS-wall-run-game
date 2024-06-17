@@ -1,40 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class GunScript : MonoBehaviour
+public class PlayerUI : MonoBehaviour
 {
+    [SerializeField] Text currentWeaponStats;
     private PlayerController _playerScript;
     private int currentWeapon;
+
     // Start is called before the first frame update
     void Start()
     {
         _playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         currentWeapon = _playerScript.currentWeapon;
-
-        if (_playerScript == null)
-            Debug.LogError("Player script null");
+        SetStats();
     }
 
     // Update is called once per frame
     void Update()
     {
         currentWeapon = _playerScript.currentWeapon;
-        // if (currentWeapon == 2)
-        // {
-        //     if (joint) Destroy(joint);
-        // }
-        if (Input.GetMouseButtonDown(0) && currentWeapon == 2)
-        {
-            Shoot();
-        }
-        else if (Input.GetMouseButtonUp(0) && currentWeapon == 2)
-        {
-
-        }
+        SetStats();
     }
-    public virtual void Shoot()
+
+    void SetStats()
     {
-        Debug.Log("pew");
+        if (currentWeapon == 1) currentWeaponStats.text = "Grappling mode";
+        else currentWeaponStats.text = "Gun mode";
     }
 }

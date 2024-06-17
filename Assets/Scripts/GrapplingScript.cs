@@ -10,6 +10,10 @@ public class GrapplingScript : MonoBehaviour
     public Transform gunTip, camera, player;
     private float maxDistance = 100f;
     private SpringJoint joint;
+    [SerializeField] Camera cam;
+    [SerializeField] float fov;
+    [SerializeField] float grapplfov;
+    [SerializeField] float grapplfovTime;
     private PlayerController _playerScript;
     private int currentWeapon;
 
@@ -29,9 +33,9 @@ public class GrapplingScript : MonoBehaviour
     private void Update()
     {
         currentWeapon = _playerScript.currentWeapon;
-        if (joint && currentWeapon != 1)
+        if (currentWeapon == 2)
         {
-            StopGrapple();
+            if (joint) Destroy(joint);
         }
         if (Input.GetMouseButtonDown(0) && currentWeapon == 1)
         {
@@ -48,12 +52,20 @@ public class GrapplingScript : MonoBehaviour
         DrawRope();
     }
 
+    private void OnDisable()
+    {
+        lr.positionCount = 0;
+        if (joint) Destroy(joint);
+    }
+
 
     void StartGrapple()
     {
         RaycastHit hit;
         if (Physics.Raycast(origin: camera.position, direction: camera.forward, out hit, maxDistance, whatIsGrappable))
         {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, grapplfov, grapplfovTime * Time.deltaTime);
+
             grapplePoint = hit.point;
             joint = player.gameObject.AddComponent<SpringJoint>();
             joint.autoConfigureConnectedAnchor = false;
@@ -86,6 +98,7 @@ public class GrapplingScript : MonoBehaviour
 
     void StopGrapple()
     {
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, grapplfovTime * Time.deltaTime);
         lr.positionCount = 0;
         Destroy(joint);
     }
