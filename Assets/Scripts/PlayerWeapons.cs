@@ -4,35 +4,30 @@ using UnityEngine;
 
 public class PlayerWeapons : MonoBehaviour
 {
-    public int currentWeapon;
-    public Transform[] weapons;
+    public int currentWeapon = 1;
 
+    private PlayerController _playerScript;
     // Start is called before the first frame update
     void Start()
     {
-        
+        _playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+
+        if (_playerScript == null)
+            Debug.LogError("Player script null");
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(currentWeapon);
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            Debug.Log(currentWeapon);
-            changeWeapon(1);
-        }
-    }
-
-    public void changeWeapon(int num)
-    {
-        currentWeapon = num;
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            if (i == num)
-                weapons[i].gameObject.SetActive(true);
-            else
-                weapons[i].gameObject.SetActive(false);
-        }
+        // if (Input.GetKeyDown(KeyCode.Alpha1))
+        // {
+        //     changeWeapon(1);
+        //     Debug.Log(currentWeapon);
+        // }
+        // else if (Input.GetKeyDown(KeyCode.Alpha2))
+        // {
+        //     changeWeapon(2);
+        //     Debug.Log(currentWeapon);
+        // }
     }
 }

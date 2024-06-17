@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class GrapplingScript : MonoBehaviour
 {
-    [SerializeField] PlayerWeapons currentWeapon;
-
     private LineRenderer lr;
     private Vector3 grapplePoint;
     public LayerMask whatIsGrappable;
     public Transform gunTip, camera, player;
     private float maxDistance = 100f;
     private SpringJoint joint;
+    private PlayerController _playerScript;
+    private int currentWeapon;
 
     private void Start()
     {
-        
+        _playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        currentWeapon = _playerScript.currentWeapon;
+
+        if (_playerScript == null)
+            Debug.LogError("Player script null");
     }
     private void Awake()
     {
@@ -24,12 +28,17 @@ public class GrapplingScript : MonoBehaviour
 
     private void Update()
     {
-        
-        if (Input.GetMouseButtonDown(0))
+        currentWeapon = _playerScript.currentWeapon;
+        if (joint && currentWeapon != 1)
+        {
+            StopGrapple();
+        }
+        if (Input.GetMouseButtonDown(0) && currentWeapon == 1)
         {
             StartGrapple();
         }
-        else if (Input.GetMouseButtonUp(0)){
+        else if (Input.GetMouseButtonUp(0) && currentWeapon == 1)
+        {
             StopGrapple();
         }
     }
@@ -43,7 +52,7 @@ public class GrapplingScript : MonoBehaviour
     void StartGrapple()
     {
         RaycastHit hit;
-        if(Physics.Raycast( origin: camera.position, direction: camera.forward, out hit, maxDistance, whatIsGrappable))
+        if (Physics.Raycast(origin: camera.position, direction: camera.forward, out hit, maxDistance, whatIsGrappable))
         {
             grapplePoint = hit.point;
             joint = player.gameObject.AddComponent<SpringJoint>();

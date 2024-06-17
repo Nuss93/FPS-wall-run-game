@@ -18,9 +18,15 @@ public class PlayerController : MonoBehaviour
     [Header("Jumping")]
     public float jumpForce = 5f;
 
+    [Header("Weapons")]
+    public int currentWeapon = 1;
+
     [Header("Keybinds")]
     [SerializeField] KeyCode jumpKey = KeyCode.Space;
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
+    [SerializeField] KeyCode grapplerKey = KeyCode.Alpha1;
+    [SerializeField] KeyCode gunKey = KeyCode.Alpha2;
+
 
     [Header("Ground Detection")]
     [SerializeField] Transform groundCheck;
@@ -32,14 +38,14 @@ public class PlayerController : MonoBehaviour
     public float playerHeight = 2f;
     [SerializeField] Transform orientation;
 
-    
+
 
     public float groundDrag = 6f;
     public float airDrag = 2f;
 
     float horizontalMovement;
     float verticalMovement;
-    
+
     Vector3 moveDirection;
     Vector3 slopeMoveDirection;
 
@@ -51,7 +57,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight / 2 + 0.5f))
         {
-            if(slopeHit.normal != Vector3.up)
+            if (slopeHit.normal != Vector3.up)
             {
                 return true;
             }
@@ -72,14 +78,25 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDist, groundMask);
-        
+
         MyInput();
         ControlDrag();
         ControlSpeed();
 
-        if(Input.GetKeyDown(jumpKey) && isGrounded)
+        if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
             Jump();
+        }
+
+        if (Input.GetKeyDown(grapplerKey))
+        {
+            Debug.Log("Grappler key pressed");
+            currentWeapon = 1;
+        }
+        if (Input.GetKeyDown(gunKey))
+        {
+            Debug.Log("Gun key pressed");
+            currentWeapon = 2;
         }
 
         slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
@@ -96,7 +113,7 @@ public class PlayerController : MonoBehaviour
 
     void ControlSpeed()
     {
-        if(Input.GetKey(sprintKey) && isGrounded)
+        if (Input.GetKey(sprintKey) && isGrounded)
         {
             moveSpeed = Mathf.Lerp(moveSpeed, sprintSpeed, acceleration * Time.deltaTime);
         }
@@ -108,7 +125,7 @@ public class PlayerController : MonoBehaviour
 
     void ControlDrag()
     {
-        if(isGrounded)
+        if (isGrounded)
         {
             rb.drag = groundDrag;
         }
@@ -121,7 +138,7 @@ public class PlayerController : MonoBehaviour
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
         verticalMovement = Input.GetAxisRaw("Vertical");
-        
+
         // move in direction relative to the player
         moveDirection = orientation.forward * verticalMovement + orientation.right * horizontalMovement;
     }
@@ -133,15 +150,15 @@ public class PlayerController : MonoBehaviour
 
     void MovePlayer()
     {
-        if(isGrounded && !OnSlope())
+        if (isGrounded && !OnSlope())
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
         }
-        else if(isGrounded && OnSlope())
+        else if (isGrounded && OnSlope())
         {
             rb.AddForce(slopeMoveDirection.normalized * moveSpeed * movementMultiplier, ForceMode.Acceleration);
         }
-        else if(!isGrounded)
+        else if (!isGrounded)
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * movementMultiplier * airMultiplier, ForceMode.Acceleration);
         }

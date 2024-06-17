@@ -13,7 +13,7 @@ public class EnemyAI : MonoBehaviour
     public float _gravityMultiplier = 1f;
     private float _enemiesYVelocity;
 
-    
+
     void Start()
     {
         // Get player game object
@@ -34,7 +34,7 @@ public class EnemyAI : MonoBehaviour
         float _gravity = _gravityValue * _gravityMultiplier * Time.deltaTime;
 
         // Ensure enemy doesnt fly when player is grappling
-        if(_enemyAI.isGrounded)
+        if (_enemyAI.isGrounded)
         {
 
         }
